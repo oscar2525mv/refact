@@ -9,7 +9,7 @@ class GestionApp {
         app.ajouteSalarie("STAGIAIRE", "Charlie", 20000, 0, "IT");
         app.ajouteSalarie("DEVELOPPEUR", "Dan", 55000, 12, "IT");
         
-        String aliceId = (String) app.employes.get(0)[0];
+        String aliceId = (String) app.employes.get(0).id();
         
         System.out.println("Salaire de Alice: " + app.calculSalaire(aliceId) + " €");
         System.out.println("Bonus de Alice: " + app.calculBonusAnnuel(aliceId) + " €");
