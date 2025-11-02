@@ -2,6 +2,7 @@ package org.iut.refactoring;
 
 import java.util.*;
 import java.time.*;
+import java.util.stream.Collectors;
 
 public class GestionPersonnel {
     
@@ -13,169 +14,101 @@ public class GestionPersonnel {
     public void ajouteSalarie(String type, String nom, double salaireDeBase, int experience, String equipe) {
         Employe emp = new Employe(UUID.randomUUID().toString(), nom, type, salaireDeBase, experience, equipe);
         employes.add(emp);
-        
-        double salaireFinal = salaireDeBase;
-        if (type.equals("DEVELOPPEUR")) {
-            salaireFinal = salaireDeBase * 1.2;
-            if (experience > 5) {
-                salaireFinal = salaireFinal * 1.15;
-            }
-        } else if (type.equals("CHEF DE PROJET")) {
-            salaireFinal = salaireDeBase * 1.5;
-            if (experience > 3) {
-                salaireFinal = salaireFinal * 1.1;
-            }
-        } else if (type.equals("STAGIAIRE")) {
-            salaireFinal = salaireDeBase * 0.6;
-        }
+
+        EmployeType empType = EmployeType.fromString(type);
+        double salaireFinal = empType.calculerSalaire(salaireDeBase, experience);
         
         salairesEmployes.put(emp.id(), salaireFinal);
         logger.log("Ajout de l'employé: " + nom);
     }
     
     public double calculSalaire(String employeId) {
-        Employe emp = null;
-        for (Employe e : employes) {
-            if (e.id().equals(employeId)) {
-                emp = e;
-                break;
-            }
-        }
+        Employe emp = getEmployeById(employeId);
         if (emp == null) {
             System.out.println("ERREUR: impossible de trouver l'employé");
             return 0;
         }
-        
-        String type = emp.type();
-        double salaireDeBase = emp.salaireDeBase();
-        int experience = emp.experience();
-        
-        double salaireFinal = salaireDeBase;
-        if (type.equals("DEVELOPPEUR")) {
-            salaireFinal = salaireDeBase * 1.2;
-            if (experience > 5) {
-                salaireFinal = salaireFinal * 1.15;
-            }
-            if (experience > 10) {
-                salaireFinal = salaireFinal * 1.05; // bonus
-            }
-        } else if (type.equals("CHEF DE PROJET")) {
-            salaireFinal = salaireDeBase * 1.5;
-            if (experience > 3) {
-                salaireFinal = salaireFinal * 1.1;
-            }
-            salaireFinal = salaireFinal + 5000; // bonus
-        } else if (type.equals("STAGIAIRE")) {
-            salaireFinal = salaireDeBase * 0.6;
-            // Pas de bonus pour les stagiaires
-        } else {
-            salaireFinal = salaireDeBase;
-        }
-        return salaireFinal;
+        EmployeType empType = EmployeType.fromString(emp.type());
+        return empType.calculerSalaire(emp.salaireDeBase(), emp.experience());
     }
-    
+
+
     public void generationRapport(String typeRapport, String filtre) {
         System.out.println("=== RAPPORT: " + typeRapport + " ===");
-        
-        if (typeRapport.equals("SALAIRE")) {
-            for (Employe emp : employes) {
-                if (filtre == null || filtre.isEmpty() || 
-                    emp.equipe().equals(filtre)) {
-                    String id = emp.id();
-                    String nom = emp.nom();
-                    double salaire = calculSalaire(id);
-                    System.out.println(nom + ": " + salaire + " €");
-                }
+        switch (typeRapport) {
+            case "SALAIRE" -> employes.stream()
+                    .filter(e -> filtre == null || filtre.isEmpty() || e.equipe().equals(filtre))
+                    .forEach(e -> {
+                        String id =  e.id();
+                        String nom =  e.nom();
+                        double salaire = calculSalaire(id);
+                        System.out.println(nom + ": " + salaire + " €");
+                    });
+            case "EXPERIENCE" -> employes.stream()
+                    .filter(e -> filtre == null || filtre.isEmpty() || e.equipe().equals(filtre))
+                    .forEach(e -> System.out.println(e.nom() + ": " + e.experience() + " années"));
+            case "DIVISION" -> {
+                Map<String, Long> divisions = employes.stream()
+                        .collect(Collectors.groupingBy(e -> e.equipe(), Collectors.counting()));
+                divisions.forEach((div, count) ->
+                        System.out.println(div + ": " + count + " employés"));
             }
-        } else if (typeRapport.equals("EXPERIENCE")) {
-            for (Employe emp : employes) {
-                if (filtre == null || filtre.isEmpty() || 
-                    emp.equipe().equals(filtre)) {
-                    String nom =  emp.nom();
-                    int exp = emp.experience();
-                    System.out.println(nom + ": " + exp + " années");
-                }
-            }
-        } else if (typeRapport.equals("DIVISION")) {
-            HashMap<String, Integer> compteurDivisions = new HashMap<>();
-            for (Employe emp : employes) {
-                String div = emp.equipe();
-                compteurDivisions.put(div, compteurDivisions.getOrDefault(div, 0) + 1);
-            }
-            for (Map.Entry<String, Integer> entry : compteurDivisions.entrySet()) {
-                System.out.println(entry.getKey() + ": " + entry.getValue() + " employés");
-            }
+            default -> System.out.println("Type de rapport inconnu: " + typeRapport);
         }
         logger.log("Rapport généré: " + typeRapport);
     }
 
     public void avancementEmploye(String employeId, String newType) {
-        for (int i = 0; i < employes.size(); i++) {
-            Employe emp = employes.get(i);
-            if (emp.id().equals(employeId)) {
-                Employe promoted = new Employe(emp.id(), emp.nom(), newType, emp.salaireDeBase(), emp.experience(), emp.equipe());
-                employes.set(i, promoted);
+        java.util.concurrent.atomic.AtomicBoolean found = new java.util.concurrent.atomic.AtomicBoolean(false);
 
-                double nouveauSalaire = calculSalaire(employeId);
-                salairesEmployes.put(employeId, nouveauSalaire);
+        employes = employes.stream()
+                .map(e -> {
+                    if (e.id().equals(employeId)) {
+                        found.set(true);
+                        return new Employe(e.id(), e.nom(), newType, e.salaireDeBase(), e.experience(), e.equipe());
+                    }
+                    return e;
+                })
+                .collect(Collectors.toCollection(ArrayList::new));
 
-                logger.log("Employé promu: " + emp.nom() + " au poste de " + newType);
-                System.out.println("Employé promu avec succès!");
-                return;
-            }
+        if (!found.get()) {
+            System.out.println("ERREUR: impossible de trouver l'employé");
+            return;
         }
-        System.out.println("ERREUR: impossible de trouver l'employé");
+
+        double nouveauSalaire = calculSalaire(employeId);
+        salairesEmployes.put(employeId, nouveauSalaire);
+
+        Employe emp = getEmployeById(employeId);
+        logger.log("Employé promu: " + emp.nom() + " au poste de " + newType);
+        System.out.println("Employé promu avec succès!");
     }
     
     public ArrayList<Employe> getEmployesParDivision(String division) {
-        ArrayList<Employe> resultat = new ArrayList<>();
-        for (Employe emp : employes) {
-            if (emp.equipe().equals(division)) {
-                resultat.add(emp); 
-            }
-        }
-        return resultat;
+        return employes.stream()
+                .filter(e -> e.equipe().equals(division))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
     
     public void printLogs() {
         System.out.println("=== LOGS ===");
         logger.getLogs().forEach(System.out::println);
     }
-    
+
     public double calculBonusAnnuel(String employeId) {
-        Employe emp = null;
-        for (Employe e : employes) {
-            if (e.id().equals(employeId)) {
-                emp = e;
-                break;
-            }
-        } 
+        Employe emp = getEmployeById(employeId);
         if (emp == null) return 0;
-        
-        String type = emp.type();
-        int experience = emp.experience();
-        double salaireDeBase = (emp.salaireDeBase());
-        
-        double bonus = 0;
-        if (type.equals("DEVELOPPEUR")) {
-            bonus = salaireDeBase * 0.1;
-            if (experience > 5) {
-                bonus = bonus * 1.5;
-            }
-        } else if (type.equals("CHEF DE PROJET")) {
-            bonus = salaireDeBase * 0.2;
-            if (experience > 3) {
-                bonus = bonus * 1.3;
-            }
-
-        } else if (type.equals("STAGIAIRE")) {
-            bonus = 0;
-
-        }
-
-        return bonus;
-
+        EmployeType type = EmployeType.fromString(emp.type());
+        return type.calculerBonus(emp.salaireDeBase(), emp.experience());
     }
+
+    private Employe getEmployeById(String id) {
+        return employes.stream()
+                .filter(e -> e.id().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
 
 }
 

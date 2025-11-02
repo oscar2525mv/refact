@@ -14,13 +14,13 @@ public class GestionPersonnelTest {
     private GestionPersonnel gestion;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         gestion = new GestionPersonnel();
     }
 
     @Test
     @DisplayName("Ajout d’un employé développeur calcule correctement le salaire initial")
-    void testAjoutDeveloppeur() {
+    public void testAjoutDeveloppeur() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
 
         assertThat(gestion.employes).hasSize(1);
@@ -35,7 +35,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Calcul du salaire d’un chef de projet expérimenté")
-    void testCalculSalaireChefProjet() {
+    public void testCalculSalaireChefProjet() {
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 4, "RH");
         var id = (String) gestion.employes.get(0).id();
 
@@ -46,7 +46,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Calcul du salaire d’un chef de projet pas expérimenté")
-    void testCalculSalaireChefProjetPasExperimente() {
+    public void testCalculSalaireChefProjetPasExperimente() {
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 1, "RH");
         var id = (String) gestion.employes.get(0).id();
 
@@ -58,7 +58,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Calcul du salaire d’un stagiaire")
-    void testCalculSalaireStagiaire() {
+    public void testCalculSalaireStagiaire() {
         gestion.ajouteSalarie("STAGIAIRE", "Charlie", 20000, 0, "IT");
         var id = (String) gestion.employes.get(0).id();
 
@@ -68,7 +68,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Calcul du salaire d’un développeur très expérimenté (bonus 10 ans)")
-    void testCalculSalaireDeveloppeurSenior() {
+    public void testCalculSalaireDeveloppeurSenior() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Dan", 55000, 12, "IT");
         var id = (String) gestion.employes.get(0).id();
 
@@ -79,7 +79,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Avancement d’un employé met à jour le type et le salaire")
-    void testAvancementEmploye() {
+    public void testAvancementEmploye() {
         gestion.ajouteSalarie("STAGIAIRE", "Emma", 30000, 2, "IT");
         var id = (String) gestion.employes.get(0).id();
         gestion.avancementEmploye(id, "DEVELOPPEUR");
@@ -93,7 +93,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Avancement d’un employé avec id incorrect met à jour le type et le salaire")
-    void testAvancementEmployeIncorrect() {
+    public void testAvancementEmployeIncorrect() {
         gestion.ajouteSalarie("STAGIAIRE", "Emma", 30000, 2, "IT");
         gestion.avancementEmploye("id_incorrect", "DEVELOPPEUR");
 
@@ -104,7 +104,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Recherche des employés par division")
-    void testGetEmployesParDivision() {
+    public void testGetEmployesParDivision() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 4, "RH");
         gestion.ajouteSalarie("STAGIAIRE", "Charlie", 20000, 0, "IT");
@@ -116,7 +116,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Calcul du bonus annuel pour développeur expérimenté")
-    void testBonusDeveloppeur() {
+    public void testBonusDeveloppeur() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         String id = (String) gestion.employes.get(0).id();
 
@@ -127,7 +127,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Calcul du bonus annuel pour développeur pas expérimenté")
-    void testBonusDeveloppeurPasExperimente() {
+    public void testBonusDeveloppeurPasExperimente() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 1, "IT");
         String id = (String) gestion.employes.get(0).id();
 
@@ -138,7 +138,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Calcul du bonus annuel pour chef de projet")
-    void testBonusChefDeProjet() {
+    public void testBonusChefDeProjet() {
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 4, "RH");
         String id = (String) gestion.employes.get(0).id();
 
@@ -149,7 +149,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Calcul du bonus annuel pour stagiaire (doit être nul)")
-    void testBonusStagiaire() {
+    public void testBonusStagiaire() {
         gestion.ajouteSalarie("STAGIAIRE", "Charlie", 20000, 0, "IT");
         String id = (String) gestion.employes.get(0).id();
 
@@ -161,7 +161,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Bonus d’un chef de projet non expérimenté (≤3 ans)")
-    void testBonusChefProjetSansExperience() {
+    public void testBonusChefProjetSansExperience() {
         gestion.ajouteSalarie("CHEF DE PROJET", "Paul", 50000, 3, "RH");
         var id = (String) gestion.employes.get(0).id();
         double bonus = gestion.calculBonusAnnuel(id);
@@ -171,7 +171,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Bonus d’un type inconnu (aucune règle spéciale)")
-    void testBonusTypeInconnu() {
+    public void testBonusTypeInconnu() {
         gestion.ajouteSalarie("INCONNU", "Mystère", 40000, 5, "IT");
         var id = (String) gestion.employes.get(0).id();
         double bonus = gestion.calculBonusAnnuel(id);
@@ -181,7 +181,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Bonus employé inexistant renvoie 0")
-    void testBonusEmployeInexistant() {
+    public void testBonusEmployeInexistant() {
         gestion.ajouteSalarie("CHEF DE PROJET", "Paul", 50000, 3, "RH");
         double bonus = gestion.calculBonusAnnuel("id-inexistant");
         assertThat(bonus).isZero();
@@ -190,14 +190,14 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Calcul salaire - employé inexistant affiche erreur et renvoie 0")
-    void testCalculSalaireEmployeInexistant() {
+    public void testCalculSalaireEmployeInexistant() {
         double salaire = gestion.calculSalaire("id-inexistant");
         assertThat(salaire).isZero();
     }
 
     @Test
     @DisplayName("Calcul salaire - type inconnu (aucune règle spéciale)")
-    void testCalculSalaireTypeInconnu() {
+    public void testCalculSalaireTypeInconnu() {
         gestion.ajouteSalarie("INCONNU", "Mystère", 40000, 5, "IT");
         var id = (String) gestion.employes.get(0).id();
         double salaire = gestion.calculSalaire(id);
@@ -208,7 +208,7 @@ public class GestionPersonnelTest {
     // === getEmployesParDivision ===
     @Test
     @DisplayName("Retourne liste vide si aucune correspondance de division")
-    void testGetEmployesParDivisionVide() {
+    public void testGetEmployesParDivisionVide() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         ArrayList<Employe> result = gestion.getEmployesParDivision("RH");
         assertThat(result).isEmpty();
@@ -216,7 +216,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Retourne plusieurs employés pour une division")
-    void testGetEmployesParDivisionPlusieurs() {
+    public void testGetEmployesParDivisionPlusieurs() {
         gestion.ajouteSalarie("DEVELOPPEUR", "A", 40000, 3, "IT");
         gestion.ajouteSalarie("STAGIAIRE", "B", 20000, 0, "IT");
         gestion.ajouteSalarie("CHEF DE PROJET", "C", 60000, 5, "RH");
@@ -229,7 +229,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Rapport EXPERIENCE affiche nom et années d’expérience")
-    void testGenerationRapportExperience() {
+    public void testGenerationRapportExperience() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("STAGIAIRE", "Bob", 20000, 1, "RH");
 
@@ -248,7 +248,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Rapport EXPERIENCE affiche nom et années d’expérience sans filtre")
-    void testGenerationRapportExperienceSansFiltre() {
+    public void testGenerationRapportExperienceSansFiltre() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("STAGIAIRE", "Bob", 20000, 1, "RH");
 
@@ -267,7 +267,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Rapport EXPERIENCE affiche nom et années d’expérience avec filtre null")
-    void testGenerationRapportExperienceFiltreNull() {
+    public void testGenerationRapportExperienceFiltreNull() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("STAGIAIRE", "Bob", 20000, 1, "IT");
 
@@ -286,7 +286,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Rapport DIVISION affiche le nombre d’employés par division")
-    void testGenerationRapportDivision() {
+    public void testGenerationRapportDivision() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 4, "RH");
         gestion.ajouteSalarie("STAGIAIRE", "Charlie", 20000, 0, "IT");
@@ -306,7 +306,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Rapport SALAIRE affiche le nombre d’employés par division")
-    void testGenerationRapportSalaire() {
+    public void testGenerationRapportSalaire() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 4, "RH");
 
@@ -325,7 +325,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Rapport SALAIRE affiche le nombre d’employés par division sans filtre")
-    void testGenerationRapportSalaireSansFiltre() {
+    public void testGenerationRapportSalaireSansFiltre() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 4, "RH");
 
@@ -344,7 +344,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Rapport SALAIRE affiche le nombre d’employés par division avec filtre null")
-    void testGenerationRapportSalaireFiltreNull() {
+    public void testGenerationRapportSalaireFiltreNull() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 4, "RH");
 
@@ -363,7 +363,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Rapport avec type de rapport inconnu n’échoue pas")
-    void testGenerationRapportTypeIncorrect() {
+    public void testGenerationRapportTypeIncorrect() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 4, "RH");
 
@@ -382,7 +382,7 @@ public class GestionPersonnelTest {
 
     @Test
     @DisplayName("Affiche tous les logs correctement")
-    void afficheTousLesLogsCorrectement() {
+    public void afficheTousLesLogsCorrectement() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 4, "RH");
 
