@@ -7,7 +7,8 @@ public class GestionPersonnel {
     
     public ArrayList<Employe> employes = new ArrayList<>();
     public HashMap<String, Double> salairesEmployes = new HashMap<>();
-    public ArrayList<String> logs = new ArrayList<>();
+
+    private final Logger logger = new Logger();
     
     public void ajouteSalarie(String type, String nom, double salaireDeBase, int experience, String equipe) {
         Employe emp = new Employe(UUID.randomUUID().toString(), nom, type, salaireDeBase, experience, equipe);
@@ -29,8 +30,7 @@ public class GestionPersonnel {
         }
         
         salairesEmployes.put(emp.id(), salaireFinal);
-        
-        logs.add(LocalDateTime.now() + " - Ajout de l'employé: " + nom);
+        logger.log("Ajout de l'employé: " + nom);
     }
     
     public double calculSalaire(String employeId) {
@@ -106,7 +106,7 @@ public class GestionPersonnel {
                 System.out.println(entry.getKey() + ": " + entry.getValue() + " employés");
             }
         }
-        logs.add(LocalDateTime.now() + " - Rapport généré: " + typeRapport);
+        logger.log("Rapport généré: " + typeRapport);
     }
 
     public void avancementEmploye(String employeId, String newType) {
@@ -119,7 +119,7 @@ public class GestionPersonnel {
                 double nouveauSalaire = calculSalaire(employeId);
                 salairesEmployes.put(employeId, nouveauSalaire);
 
-                logs.add(LocalDateTime.now() + " - Employé promu: " + emp.nom());
+                logger.log("Employé promu: " + emp.nom() + " au poste de " + newType);
                 System.out.println("Employé promu avec succès!");
                 return;
             }
@@ -139,9 +139,7 @@ public class GestionPersonnel {
     
     public void printLogs() {
         System.out.println("=== LOGS ===");
-        for (String log : logs) {
-            System.out.println(log);
-        }
+        logger.getLogs().forEach(System.out::println);
     }
     
     public double calculBonusAnnuel(String employeId) {
@@ -178,6 +176,7 @@ public class GestionPersonnel {
         return bonus;
 
     }
+
 }
 
 

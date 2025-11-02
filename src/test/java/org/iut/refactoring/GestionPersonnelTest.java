@@ -233,8 +233,17 @@ public class GestionPersonnelTest {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("STAGIAIRE", "Bob", 20000, 1, "RH");
 
-        gestion.generationRapport("EXPERIENCE", "IT");
-        assertThat(gestion.logs).anyMatch(s -> s.contains("Rapport généré: EXPERIENCE"));
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        java.io.PrintStream originalOut = System.out;
+        System.setOut(new java.io.PrintStream(out));
+        try {
+            gestion.generationRapport("EXPERIENCE", "IT");
+            gestion.printLogs();
+        } finally {
+            System.setOut(originalOut);
+        }
+        String output = out.toString();
+        assertThat(output).contains("Rapport généré: EXPERIENCE");
     }
 
     @Test
@@ -243,8 +252,17 @@ public class GestionPersonnelTest {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("STAGIAIRE", "Bob", 20000, 1, "RH");
 
-        gestion.generationRapport("EXPERIENCE", "");
-        assertThat(gestion.logs).anyMatch(s -> s.contains("Rapport généré: EXPERIENCE"));
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        java.io.PrintStream originalOut = System.out;
+        System.setOut(new java.io.PrintStream(out));
+        try {
+            gestion.generationRapport("EXPERIENCE", "");
+            gestion.printLogs();
+        } finally {
+            System.setOut(originalOut);
+        }
+        String output = out.toString();
+        assertThat(output).contains("Rapport généré: EXPERIENCE");
     }
 
     @Test
@@ -253,8 +271,17 @@ public class GestionPersonnelTest {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("STAGIAIRE", "Bob", 20000, 1, "IT");
 
-        gestion.generationRapport("EXPERIENCE", null);
-        assertThat(gestion.logs).anyMatch(s -> s.contains("Rapport généré: EXPERIENCE"));
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        java.io.PrintStream originalOut = System.out;
+        System.setOut(new java.io.PrintStream(out));
+        try {
+            gestion.generationRapport("EXPERIENCE", null);
+            gestion.printLogs();
+        } finally {
+            System.setOut(originalOut);
+        }
+        String output = out.toString();
+        assertThat(output).contains("Rapport généré: EXPERIENCE");
     }
 
     @Test
@@ -264,8 +291,17 @@ public class GestionPersonnelTest {
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 4, "RH");
         gestion.ajouteSalarie("STAGIAIRE", "Charlie", 20000, 0, "IT");
 
-        gestion.generationRapport("DIVISION", null);
-        assertThat(gestion.logs).anyMatch(s -> s.contains("Rapport généré: DIVISION"));
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        java.io.PrintStream originalOut = System.out;
+        System.setOut(new java.io.PrintStream(out));
+        try {
+            gestion.generationRapport("DIVISION", null);
+            gestion.printLogs();
+        } finally {
+            System.setOut(originalOut);
+        }
+        String output = out.toString();
+        assertThat(output).contains("Rapport généré: DIVISION");
     }
 
     @Test
@@ -274,8 +310,17 @@ public class GestionPersonnelTest {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 4, "RH");
 
-        gestion.generationRapport("SALAIRE", "RH" );
-        assertThat(gestion.logs).anyMatch(s -> s.contains("Rapport généré: SALAIRE"));
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        java.io.PrintStream originalOut = System.out;
+        System.setOut(new java.io.PrintStream(out));
+        try {
+            gestion.generationRapport("SALAIRE", "RH");
+            gestion.printLogs();
+        } finally {
+            System.setOut(originalOut);
+        }
+        String output = out.toString();
+        assertThat(output).contains("Rapport généré: SALAIRE");
     }
 
     @Test
@@ -284,8 +329,17 @@ public class GestionPersonnelTest {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 4, "RH");
 
-        gestion.generationRapport("SALAIRE", "" );
-        assertThat(gestion.logs).anyMatch(s -> s.contains("Rapport généré: SALAIRE"));
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        java.io.PrintStream originalOut = System.out;
+        System.setOut(new java.io.PrintStream(out));
+        try {
+            gestion.generationRapport("SALAIRE", "");
+            gestion.printLogs();
+        } finally {
+            System.setOut(originalOut);
+        }
+        String output = out.toString();
+        assertThat(output).contains("Rapport généré: SALAIRE");
     }
 
     @Test
@@ -294,8 +348,17 @@ public class GestionPersonnelTest {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 4, "RH");
 
-        gestion.generationRapport("SALAIRE", null );
-        assertThat(gestion.logs).anyMatch(s -> s.contains("Rapport généré: SALAIRE"));
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        java.io.PrintStream originalOut = System.out;
+        System.setOut(new java.io.PrintStream(out));
+        try {
+            gestion.generationRapport("SALAIRE", null);
+            gestion.printLogs();
+        } finally {
+            System.setOut(originalOut);
+        }
+        String output = out.toString();
+        assertThat(output).contains("Rapport généré: SALAIRE");
     }
 
     @Test
@@ -304,19 +367,34 @@ public class GestionPersonnelTest {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 4, "RH");
 
-        gestion.generationRapport("INCORRECT", null );
-        assertThat(gestion.logs).anyMatch(s -> s.contains("Rapport généré: INCORRECT"));
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        java.io.PrintStream originalOut = System.out;
+        System.setOut(new java.io.PrintStream(out));
+        try {
+            gestion.generationRapport("INCORRECT", null);
+            gestion.printLogs();
+        } finally {
+            System.setOut(originalOut);
+        }
+        String output = out.toString();
+        assertThat(output).contains("Rapport généré: INCORRECT");
     }
-
-
 
     @Test
     @DisplayName("Affiche tous les logs correctement")
     void afficheTousLesLogsCorrectement() {
         gestion.ajouteSalarie("DEVELOPPEUR", "Alice", 50000, 6, "IT");
         gestion.ajouteSalarie("CHEF DE PROJET", "Bob", 60000, 4, "RH");
-        gestion.printLogs();
 
-        // Aucun assert spécifique ici, juste vérifier qu'aucune exception n'est levée
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        java.io.PrintStream originalOut = System.out;
+        System.setOut(new java.io.PrintStream(out));
+        try {
+            gestion.printLogs();
+        } finally {
+            System.setOut(originalOut);
+        }
+        String output = out.toString();
+        assertThat(output).contains("Ajout de l'employé: Alice").contains("Ajout de l'employé: Bob");
     }
 }
